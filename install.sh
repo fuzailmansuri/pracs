@@ -6,11 +6,23 @@ echo "Starting Hyprland setup..."
 # Update system
 sudo pacman -Syu --noconfirm
 
+# Handle jack2 and pipewire conflicts first
+echo "Removing existing audio packages..."
+sudo pacman -Rdd jack2 --noconfirm || true
+sudo pacman -R pipewire-jack --noconfirm || true
+
+# Install pipewire components separately
+echo "Installing audio components..."
+sudo pacman -S --noconfirm pipewire
+sudo pacman -S --noconfirm pipewire-alsa
+sudo pacman -S --noconfirm pipewire-pulse
+sudo pacman -S --noconfirm wireplumber
+sudo pacman -S --overwrite '*' --noconfirm pipewire-jack
+
 # Install essential packages
 sudo pacman -S --noconfirm \
     networkmanager wpa_supplicant wireless_tools iwd dhclient \
     bluez bluez-utils \
-    pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber \
     xdg-user-dirs xdg-utils \
     mesa vulkan-intel \
     git curl wget unzip zip tar \
